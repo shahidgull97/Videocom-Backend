@@ -20,7 +20,13 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 import router from "./src/user/user.router.js";
 export const app = express();
-const server = http.createServer(app);
+const server = http.createServer(
+  {
+    key: fs.readFileSync("localhost-key.pem"), // Path to your SSL key
+    cert: fs.readFileSync("localhost.pem"), // Path to your SSL certificate
+  },
+  app
+);
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -48,11 +54,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("offer", ({ offer, roomId }) => {
-    console.log(`[SERVER] Received offer from ${socket.id} in room ${roomId}`);
-
-    // Log all clients in the room
-    const clients = io.sockets.adapter.rooms.get(roomId);
-    console.log(`[SERVER] Forwarding offer to`, clients ? [...clients] : []);
+    console.log(`Offer sent in room ${roomId}`);
     socket.to(roomId).emit("offer", { offer, sender: socket.id });
   });
 

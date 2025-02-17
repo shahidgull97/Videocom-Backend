@@ -2,7 +2,7 @@
 import { connectDB } from "./confi/db.js";
 import server from "./index.js";
 
-const serverStar = server.listen(process.env.PORT, async (err) => {
+const serverStar = server.listen(process.env.PORT, "0.0.0.0", async (err) => {
   if (err) {
     console.log(`server failed with error ${err}`);
   } else {
